@@ -1,5 +1,5 @@
 use std::io::{self, Write};
-use std::process::exit;
+use super::{meta_command, sql_command};
 
 fn print_prompt() {
     print!("dummy-db> ");
@@ -17,9 +17,13 @@ fn read_input() -> String {
 }
 
 fn eval_command(command: &str) {
-    match command {
-        ".exit" => exit(0),
-        _ => println!("Unrecognized command '{command}'")
+    if command.is_empty() {
+        return
+    }
+
+    match command.chars().next().unwrap() {
+        '.' => meta_command::eval(command),
+        _ => sql_command::eval(command)
     }
 }
 
